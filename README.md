@@ -48,4 +48,5 @@ Run:
 ./scripts/bootstrap_argocd.sh
 ```
 
-
+### Future work proposals
+Make the repo private, generate github token (either PAT or prefferably GitHub App token) and configure secret to be used by ArgoCD (ideally preserve in Secrets Manager and use External Secrets Operator to fetch it).

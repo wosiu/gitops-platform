@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: root-app
+spec:
+  generators:
+    - list:
+        elements:
+          - name: traefik
+            namespace: ingress
+            chart: traefik
+            chartRepo: https://helm.traefik.io/traefik
+          - name: keycloak
+            namespace: identity
+            chart: keycloak
+            chartRepo: https://charts.bitnami.com/bitnami
+  template:
+    metadata:
+      name: '{{name}}'
+    spec:
+      project: default
+      sources:
+        - repoURL: '{{chartRepo}}'
+          targetRevision: main
+          chart: '{{chart}}'
+          helm:
+            valueFiles:
+              - $values/values.yaml
+        - repoURL: https://github.com/wosiu/gitops-platform
+          targetRevision: main
+          path: '{{name}}'
+          ref: values
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true 
