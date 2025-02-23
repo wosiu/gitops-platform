@@ -30,14 +30,16 @@ if ! argocd cluster list &>/dev/null; then
     exit 1
 fi
 
-# Add repository and create bootstrap application
-GITOPS_REPO_URL="https://github.com/wosiu/gitops-platform"
+if ! argocd app get root-app &>/dev/null; then
+    echo "ArgoCD root-app does not exist, creating..."
+    GITOPS_REPO_URL="https://github.com/wosiu/gitops-platform"
+    kubectl config set-context --current --namespace=argocd
+    argocd repo add $GITOPS_REPO_URL --name gitops-platform
 
-kubectl config set-context --current --namespace=argocd
-argocd repo add $GITOPS_REPO_URL --name gitops-platform
-argocd app create root-app \
-  --repo $GITOPS_REPO_URL \
-  --path root-app \
-  --dest-server https://kubernetes.default.svc \
-  --dest-namespace argocd \
-  --sync-policy automated 
+    argocd app create root-app \
+        --repo $GITOPS_REPO_URL \
+        --path root-app \
+        --dest-server https://kubernetes.default.svc \
+        --dest-namespace argocd \
+        --sync-policy automated 
+fi
