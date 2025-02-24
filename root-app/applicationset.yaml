@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: root-app
+  name: platform-apps
 spec:
   generators:
     - list:
@@ -35,13 +35,13 @@ spec:
         - repoURL: '{{chartRepo}}'
           targetRevision: '{{chartVersion}}'
           chart: '{{chart}}'
-          helm:
-            valueFiles:
-              - $values/values.yaml
-        - repoURL: https://github.com/wosiu/gitops-platform
-          targetRevision: main
-          path: '{{name}}'
-          ref: values
+        #   helm:
+        #     valueFiles:
+        #       - $values/values.yaml
+        # - repoURL: https://github.com/wosiu/gitops-platform
+        #   targetRevision: main
+        #   path: '{{name}}'
+        #   ref: values
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
