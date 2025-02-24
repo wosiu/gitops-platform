@@ -14,9 +14,9 @@ spec:
             wave: "0"  
           - name: keycloak
             namespace: identity
-            chart: keycloak
+            chart: bitnami/keycloak
             chartVersion: "24.4.10"  
-            chartRepo: https://charts.bitnami.com/bitnami
+            chartRepo: https://charts.bitnami.com
             wave: "0" 
           - name: argocd
             namespace: argocd
