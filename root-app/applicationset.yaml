@@ -6,12 +6,14 @@ spec:
   generators:
     - list:
         elements:
-          #- name: traefik
-          #  namespace: ingress
-          #  chart: traefik
-          #  chartVersion: "34.4.0" 
-          #  chartRepo: https://helm.traefik.io/traefik
-          #  wave: "0"  
+          - name: traefik
+            namespace: ingress
+            chart: traefik
+            chartVersion: "34.4.0" 
+            chartRepo: https://helm.traefik.io/traefik
+            wave: "0"  
+            # TODO enable autoSync. It was disabled for development.
+            autoSync: false
           #- name: keycloak
           #  namespace: identity
           #  chart: keycloak
@@ -23,7 +25,9 @@ spec:
             chart: argo-cd
             chartVersion: "7.8.4"
             chartRepo: https://argoproj.github.io/argo-helm
+            # NOTE: ArgoCD has configuration for SSO from Keycloak and ingress from Traefik, so run after.
             wave: "2"
+            autoSync: true
   template:
     metadata:
       name: '{{name}}'
@@ -45,9 +49,16 @@ spec:
         server: https://kubernetes.default.svc
         namespace: '{{namespace}}'
       syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
         syncOptions:
           - CreateNamespace=true
           - ServerSideApply=true 
+          - ApplyOutOfSyncOnly=true
+  templatePatch: |
+    {{- if .autoSync }}
+    spec:
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+    {{- end }}  
+
