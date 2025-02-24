@@ -12,19 +12,19 @@ spec:
             chartVersion: "34.4.0" 
             chartRepo: https://helm.traefik.io/traefik
             wave: "0"  
-          #- name: keycloak
-          #  namespace: identity
-          #  chart: keycloak
-          #  chartVersion: "24.4.10"  
-          #  chartRepo: https://charts.bitnami.com/bitnami
-          #  wave: "1" 
+          - name: keycloak
+            namespace: identity
+            chart: keycloak
+            chartVersion: "24.4.10"  
+            chartRepo: https://charts.bitnami.com/bitnami
+            wave: "0" 
           - name: argocd
             namespace: argocd
             chart: argo-cd
             chartVersion: "7.8.4"
             chartRepo: https://argoproj.github.io/argo-helm
             # NOTE: ArgoCD has configuration for SSO from Keycloak and ingress from Traefik, so run after.
-            wave: "2"
+            wave: "1"
   template:
     metadata:
       name: '{{name}}'
